@@ -90,6 +90,7 @@ namespace Project_1
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             ButtonsOff();
+            lblError.Text = "";
         }
 
         protected void btnClear_Click(object sender, EventArgs e)
@@ -98,16 +99,16 @@ namespace Project_1
             lblError.Text = "";
         }
 
-        private void DisplayTechnician(String strTechID)
+        private void DisplayTechnician()
         {
             DataSet dsData;
 
-            dsData = clsDatabase.GetTechnicianByID(strTechID);
+            dsData = clsDatabase.GetTechnicians();
             if (dsData == null)
             {
                 lblError.Text = "Error retrieving Technicians";
             }
-            else if (dsData.Tables.Count < 1)
+            else if (dsData.Tables.Count < 0)
             {
                 lblError.Text = "Error retrieving Technicians";
                 dsData.Dispose();
@@ -176,17 +177,25 @@ namespace Project_1
 
         protected void drpTech_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DisplayTechnician(drpTech.SelectedValue.ToString());
+            if (drpTech.SelectedIndex > 0)
+            {
+                DisplayTechnician();
+                ButtonsOn();
+            }
+            else
+            {
+
+            }
         }
 
 
         public bool ValidateText()
         {
             bool flag = false;
-            long num2 = -1L;
             decimal num = 0M;
+            long num2 = -1L;
             string str = "";
-            if (this.txtFName.Text.Trim().Length < 1)
+            if (txtFName.Text.Trim().Length < 1)
             {
                 flag = true;
                 if (str.Trim().Length > 0)
@@ -195,7 +204,7 @@ namespace Project_1
                 }
                 str = str + "First Name is required";
             }
-            if (this.txtLName.Text.Trim().Length < 1)
+            if (txtLName.Text.Trim().Length < 1)
             {
                 flag = true;
                 if (str.Trim().Length > 0)
@@ -204,7 +213,7 @@ namespace Project_1
                 }
                 str = str + "Last Name is required";
             }
-            if (this.txtPhone.Text.Trim().Length < 1)
+            if (txtPhone.Text.Trim().Length < 1)
             {
                 flag = true;
                 if (str.Trim().Length > 0)
@@ -213,7 +222,7 @@ namespace Project_1
                 }
                 str = str + "Telephone is required";
             }
-            else if (this.txtPhone.Text.Trim().Length < 10)
+            else if (txtPhone.Text.Trim().Length < 10)
             {
                 flag = true;
                 if (str.Trim().Length > 0)
@@ -226,12 +235,10 @@ namespace Project_1
             {
                 try
                 {
-                    num2 = Convert.ToInt64(this.txtPhone.Text);
+                    num2 = Convert.ToInt64(txtPhone.Text);
                 }
-                catch (Exception exception1)
+                catch (Exception ex)
                 {
-                    Exception ex = exception1;
-                    Exception exception = ex;
                     num2 = -1L;
                 }
                 if (num2 < 0L)
@@ -244,7 +251,7 @@ namespace Project_1
                     str = str + "Telephone must be numeric";
                 }
             }
-            if (this.txtHRate.Text.Trim().Length < 1)
+            if (txtHRate.Text.Trim().Length < 1)
             {
                 flag = true;
                 if (str.Trim().Length > 0)
@@ -259,10 +266,8 @@ namespace Project_1
                 {
                     num = Convert.ToDecimal(this.txtHRate.Text);
                 }
-                catch (Exception exception3)
+                catch (Exception ex)
                 {
-                    Exception ex = exception3;
-                    Exception exception2 = ex;
                     num = -1M;
                 }
                 if (decimal.Compare(num, 0M) < 0)
@@ -275,13 +280,12 @@ namespace Project_1
                     str = str + "Hourly Rate must be numeric";
                 }
             }
-            this.lblError.Text = str;
+            lblError.Text = str;
             return !flag;
         }
 
         protected void btnAccept_Click(object sender, EventArgs e)
         {
-            ValidateText();
             ValidateText();
         }
     }
